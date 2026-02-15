@@ -1,0 +1,222 @@
+:root {
+    --bg-color: #121212;
+    --panel-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --accent: #00ffcc;
+    --accent-glow: rgba(0, 255, 204, 0.5);
+    --cable-color: #ff0055;
+    --cable-glow: rgba(255, 0, 85, 0.6);
+    --knob-color: #333;
+    --knob-active: #00ffcc;
+}
+
+body {
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden; /* We'll handle scrolling in rack */
+    user-select: none;
+}
+
+/* Toolbar */
+#toolbar {
+    padding: 15px;
+    background: #0a0a0a;
+    border-bottom: 1px solid #333;
+    display: flex;
+    gap: 15px;
+    z-index: 1000;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    flex-wrap: wrap;
+}
+
+button {
+    background: #222;
+    color: var(--text-color);
+    border: 1px solid #444;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: inherit;
+    border-radius: 4px;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 1px;
+}
+
+button:hover {
+    background: #333;
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+    color: white;
+}
+
+button:active {
+    background: var(--accent);
+    color: black;
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* Workspace */
+#rack {
+    position: relative;
+    width: 100vw;
+    height: calc(100vh - 60px);
+    overflow: auto; /* Allow scrolling */
+    background-image:
+        radial-gradient(circle at 10% 10%, rgba(30, 30, 30, 0.5) 1px, transparent 1px),
+        radial-gradient(circle at 90% 90%, rgba(30, 30, 30, 0.5) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+/* SVG Layer for Cables */
+svg#cable-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5000px; /* Large canvas */
+    height: 5000px;
+    pointer-events: none;
+    z-index: 1;
+    overflow: visible;
+}
+
+.cable-path {
+    fill: none;
+    stroke: var(--cable-color);
+    stroke-width: 5px;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 5px var(--cable-glow));
+    transition: stroke 0.2s;
+}
+
+/* Modules */
+.module {
+    position: absolute;
+    background: var(--panel-bg);
+    border: 1px solid #444;
+    border-radius: 8px;
+    width: 160px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 2;
+    cursor: grab;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    backdrop-filter: blur(5px);
+}
+
+.module:hover {
+    border-color: #666;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+}
+
+.module-header {
+    background: linear-gradient(90deg, #222, #111);
+    padding: 8px;
+    margin: -15px -15px 15px -15px;
+    text-align: center;
+    font-weight: bold;
+    color: var(--accent);
+    text-shadow: 0 0 5px var(--accent-glow);
+    border-radius: 8px 8px 0 0;
+    border-bottom: 1px solid #333;
+    letter-spacing: 1px;
+}
+
+.control-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-size: 0.75em;
+    margin-bottom: 5px;
+    color: #888;
+    text-transform: uppercase;
+}
+
+/* Custom Range Input */
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    margin-top: -6px;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: #444;
+    border-radius: 2px;
+}
+
+/* Select */
+select {
+    background: #222;
+    color: #ddd;
+    border: 1px solid #444;
+    padding: 5px;
+    border-radius: 4px;
+    outline: none;
+}
+select:focus { border-color: var(--accent); }
+
+/* Ports (Jacks) */
+.ports {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #333;
+}
+
+.port {
+    width: 24px;
+    height: 24px;
+    background: #111;
+    border: 2px solid #555;
+    border-radius: 50%;
+    position: relative;
+    cursor: crosshair;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
+    transition: all 0.2s;
+}
+
+.port:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow), inset 0 0 5px rgba(0,0,0,0.8);
+    background: #222;
+}
+
+.port.input::before {
+    content: 'IN';
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6em;
+    color: #666;
+}
+
+.port.output::before {
+    content: 'OUT';
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6em;
+    color: #666;
+}
